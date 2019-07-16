@@ -11,7 +11,8 @@ These instructions will get you a copy of the project up and running on your loc
 To run the VM, you must have the following:
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://www.vagrantup.com/)
-* * For more information on the base setup, visit the [Udacity VM Setup](https://github.com/udacity/fullstack-nanodegree-vm)
+
+For more information on the base setup, visit the [Udacity VM Setup](https://github.com/udacity/fullstack-nanodegree-vm)
 
 
 ### Running the VM
