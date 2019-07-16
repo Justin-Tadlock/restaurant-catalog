@@ -19,9 +19,11 @@ For more information on the base setup, visit the [Udacity VM Setup](https://git
 
 To run the VM you must do the following:
 1. Obtain a copy of the repository from: [Repo Zip](https://github.com/udacity/fullstack-nanodegree-vm/archive/master.zip)
-2. Unzip the master.zip file into the Vagrant's repository directory under "{repoLocation}/vagrant/catalog"
-3. Open a command prompt/PowerShell/terminal window inside the vagrant directory
-4. Run the following commands
+2. Unzip the master.zip file into a chosen directory
+3. Obtain a copy of this repository from [here](https://github.com/Justin-Tadlock/restaurant-catalog/archive/master.zip) 
+4. Unzip the content into the Vagrant's repository directory under "{repoLocation}/vagrant/catalog"
+5. Open a command prompt/PowerShell/terminal window inside the vagrant directory
+6. Run the following commands
 ```
 vagrant init
 vagrant up
