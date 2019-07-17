@@ -7,6 +7,7 @@
 
     <h2>{{ restaurant.name }}</h2>
     <h3>Menu Items</h3>
+    {% if menu_items != [] %}
     <table>
       {% for item in menu_items %}
       <tr>
@@ -17,5 +18,8 @@
       </tr>
       {% endfor %}
     </table>
+    {% else %}
+    <p class="blue-bg">There are currently no menu items for this restaurant</p>
+    {% endif %}
   </body>
 </html>
