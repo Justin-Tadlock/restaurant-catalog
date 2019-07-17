@@ -17,7 +17,7 @@ item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$
 @app.route('/restaurants/')
 @app.route('/')
 def Show_All_Restaurants():
-    return "List all restaurants"
+    return render_template('show-all-restaurants.html', restaurants=restaurants)
 
 
 @app.route('/restaurant/<int:rest_id>/')
