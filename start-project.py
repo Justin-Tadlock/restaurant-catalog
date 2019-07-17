@@ -11,6 +11,7 @@ def Show_All_Restaurants():
 
 
 @app.route('/restaurant/<int:rest_id>/')
+@app.route('/restaurant/<int:rest_id>/menu')
 def Show_Restaurant(rest_id):
     return "View Restaurant %d" % (rest_id)
 
