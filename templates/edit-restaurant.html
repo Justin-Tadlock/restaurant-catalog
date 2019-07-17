@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <h1>Edit Restaurant</h1>
+
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">
+      <label>Name: </label><input type=text name="rest_name" value="{{ restaurant.name }}">
+
+      <input type=submit value="Confirm">&nbsp;
+      <input type="button" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
+      <h3>Menu Items</h3>
+      <a href="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">Add menu item</a>
+      <table>
+        {% for item in menu_items %}
+        <tr>
+          <td>
+            <i>{{ item.name }}</i><br>
+            <p>&#9;{{ item.description }}</p>
+          </td>
+          <td>
+            {{ item.price }}
+          </td>
+          <td>
+            <a href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a><br>
+            <a href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a><br>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <input type=submit value="Confirm">&nbsp;
+      <input type="button" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
+    </form>
+  </body>
+</html>

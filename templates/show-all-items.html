@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li><strong>{{ message }}</strong></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    
+    <table>
+      {% for item in menu_items %}
+      <tr>
+        <td>
+          <i>{{ item.name }}</i><br>
+          <p>&#9;{{ item.description }}</p>
+        </td>
+        <td>
+          {{ item.price }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

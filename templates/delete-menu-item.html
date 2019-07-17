@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <h1>Delete Menu Item</h1>
+
+    <h3>Are you sure you want to delete the item with the following information?</h3>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('Delete_Restaurant', rest_id=restaurant.id, item_id=item.id) }}">
+      <label>Restaurant Name: {{ restaurant.name }}</label><br>
+      <label>Item Name: {{ item.name }}</label><br>
+      <label>Item Price: {{ item.price }}</label><br>
+      <label>Item Description: </label><input type=textarea readonly=true value="{{ item.description }}"><br><br>
+      
+      <input type=submit value="Confirm">&nbsp;
+      <input type=button onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
+    </form>
+  </body>
+</html>
