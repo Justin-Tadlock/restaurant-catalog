@@ -23,7 +23,7 @@ def Show_All_Restaurants():
 @app.route('/restaurant/<int:rest_id>/')
 @app.route('/restaurant/<int:rest_id>/menu')
 def Show_Restaurant(rest_id):
-    return "View Restaurant %d" % (rest_id)
+    return render_template('show-restaurant.html', restaurant=restaurants[0], menu_items=items)
 
 
 @app.route('/restaurant/add/')
