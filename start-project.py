@@ -43,7 +43,7 @@ def Delete_Restaurant(rest_id):
 
 @app.route('/restaurants/all/items/')
 def Show_All_Items():
-    return "Showing all items"
+    return render_template('show-all-items.html', menu_items=items)
 
 
 @app.route('/restaurant/<int:rest_id>/add')
