@@ -28,7 +28,7 @@ def Show_Restaurant(rest_id):
 
 @app.route('/restaurant/add/')
 def Add_Restaurant():
-    return "Add Restaurant"
+    return render_template('add-restaurant.html')
 
 
 @app.route('/restaurant/<int:rest_id>/edit')
