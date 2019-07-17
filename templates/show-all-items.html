@@ -3,6 +3,7 @@
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
+    <h1>Show All Menu Items</h1>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul>
@@ -13,15 +14,13 @@
     {% endif %}
     {% endwith %}
     
+    <h3>Menu Items</h3>
     <table>
       {% for item in menu_items %}
       <tr>
         <td>
-          <i>{{ item.name }}</i><br>
+          <i>{{ item.name }}</i>&#9;{{ item.price }}
           <p>&#9;{{ item.description }}</p>
-        </td>
-        <td>
-          {{ item.price }}
         </td>
       </tr>
       {% endfor %}

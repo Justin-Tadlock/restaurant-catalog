@@ -6,12 +6,12 @@
     <h1>Edit Restaurant</h1>
 
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">
-      <label>Name: </label><input type=text name="rest_name" value="{{ restaurant.name }}">
+      <label>Name: </label><input type=text name="rest_name" value="{{ restaurant.name }}"><br><br>
 
       <input type=submit value="Confirm">&nbsp;
       <input type="button" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
       <h3>Menu Items</h3>
-      <a href="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">Add menu item</a>
+      <a href="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">Add menu item</a><br>
       <table>
         {% for item in menu_items %}
         <tr>

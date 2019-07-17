@@ -7,10 +7,24 @@
 
     <h3>Are you sure you want to delete the item with the following information?</h3>
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('Delete_Restaurant', rest_id=restaurant.id, item_id=item.id) }}">
-      <label>Restaurant Name: {{ restaurant.name }}</label><br>
-      <label>Item Name: {{ item.name }}</label><br>
-      <label>Item Price: {{ item.price }}</label><br>
-      <label>Item Description: </label><input type=textarea readonly=true value="{{ item.description }}"><br><br>
+      <table>
+        <tr>
+          <td><label>Restaurant Name: </label></td>
+          <td>{{ restaurant.name }}</td>
+        <tr>
+          <td><label>Item Name: </label></td>
+          <td>{{ item.name }}</td>
+        </tr>
+        <tr>
+          <td><label>Item Price: </label></td>
+          <td>{{ item.price }}</td>
+        </tr>
+        <tr>
+          <td><label>Item Description: </label></td>
+          <td><input type=textarea value="{{ item.description }}" readonly=true></td>
+        </tr>
+      </table>
+      <br>
       
       <input type=submit value="Confirm">&nbsp;
       <input type=button onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">

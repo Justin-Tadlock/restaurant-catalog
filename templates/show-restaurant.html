@@ -11,11 +11,8 @@
       {% for item in menu_items %}
       <tr>
         <td>
-          <i>{{ item.name }}</i><br>
+          <i>{{ item.name }}</i>&#9;{{ item.price }}
           <p>&#9;{{ item.description }}</p>
-        </td>
-        <td>
-          {{ item.price }}
         </td>
       </tr>
       {% endfor %}

@@ -8,6 +8,7 @@
     <h3>Name your new restaurant</h3>
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('Add_Restaurant') }}">
       <label>Name: </label><input type=text name="rest_name">
+      <br><br>
 
       <input type=submit value="Confirm">&nbsp;
       <input type="button" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/>
