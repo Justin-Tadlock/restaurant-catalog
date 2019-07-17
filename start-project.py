@@ -46,6 +46,10 @@ def Show_All_Items():
     return "Showing all items"
 
 
+@app.route('/restaurant/<int:rest_id>/add')
+def Add_Menu_Item(rest_id):
+    return "Add menu item to restaurant %d" % (rest_id)
+
 @app.route('/restaurant/<int:rest_id>/edit/<int:item_id>/')
 def Edit_Menu_Item(rest_id, item_id):
     return "Editing restaurant %d, item %d" % (rest_id, item_id)
