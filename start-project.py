@@ -33,7 +33,7 @@ def Add_Restaurant():
 
 @app.route('/restaurant/<int:rest_id>/edit')
 def Edit_Restaurant(rest_id):
-    return "Edit Restaurant"
+    return render_template('edit-restaurant.html', restaurant=restaurant, menu_items=items)
 
 
 @app.route('/restaurant/<int:rest_id>/delete')
