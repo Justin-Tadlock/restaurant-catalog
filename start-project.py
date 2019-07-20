@@ -70,8 +70,22 @@ def Edit_Restaurant(rest_id):
     return render_template('edit-restaurant.html', restaurant=restaurant, menu_items=items)
 
 
-@app.route('/restaurant/<int:rest_id>/delete')
+@app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])
 def Delete_Restaurant(rest_id):
+    if request.method == 'POST':
+        restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+        if restaurant != []:
+            session.query(MenuItem).filter_by(restaurant_id=rest_id).delete()
+        
+        flash('Successfully deleted %s.' % (restaurant.name))
+
+        session.delete(restaurant)
+        session.commit()
+
+        return redirect(url_for('Show_All_Restaurants'))
+    
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+
     return render_template('delete-restaurant.html', restaurant=restaurant)
 
 
@@ -95,5 +109,6 @@ def Delete_Menu_Item(rest_id, item_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'my_super_secret_but_not_really_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
