@@ -47,14 +47,26 @@ def Add_Restaurant():
 
         session.add(new_restaurant)
         session.commit()
-        
+
         return redirect(url_for('Show_All_Restaurants'))
 
     return render_template('add-restaurant.html')
 
 
-@app.route('/restaurant/<int:rest_id>/edit')
+@app.route('/restaurant/<int:rest_id>/edit', methods=['GET', 'POST'])
 def Edit_Restaurant(rest_id):
+    if request.method == 'POST':
+        updated_restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+        updated_restaurant.name = request.form['rest_name']
+
+        session.add(updated_restaurant)
+        session.commit()
+
+        return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
+    
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+    items = session.query(MenuItem).filter_by(restaurant_id=rest_id).all()
+
     return render_template('edit-restaurant.html', restaurant=restaurant, menu_items=items)
 
 
