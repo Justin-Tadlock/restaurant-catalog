@@ -96,8 +96,28 @@ def Show_All_Items():
     return render_template('show-all-items.html', menu_items=items)
 
 
-@app.route('/restaurant/<int:rest_id>/add')
+@app.route('/restaurant/<int:rest_id>/add', methods=['GET', 'POST'])
 def Add_Menu_Item(rest_id):
+    if request.method == 'POST':
+        form = request.form
+
+        new_menu_item = MenuItem(
+            name = form['item_name'],
+            price = form['item_price'],
+            course = form['item_course'],
+            description = form['item_description'],
+            restaurant_id = rest_id
+        )
+
+        session.add(new_menu_item)
+        session.commit()
+
+        flash("Successfully added the %s menu item." % (new_menu_item.name))
+
+        return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
+
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+
     return render_template('add-menu-item.html', restaurant=restaurant)
 
 @app.route('/restaurant/<int:rest_id>/edit/<int:item_id>/')

@@ -5,6 +5,17 @@
   <body>
     <h1>Edit Restaurant</h1>
 
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li><strong>{{ message }}</strong></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <br><br>
+    {% endwith %}
+    
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">
       <label>Name: </label><input type=text name="rest_name" value="{{ restaurant.name }}"><br><br>
 
