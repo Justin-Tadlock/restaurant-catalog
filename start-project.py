@@ -34,7 +34,10 @@ def Show_All_Restaurants():
 @app.route('/restaurant/<int:rest_id>/')
 @app.route('/restaurant/<int:rest_id>/menu')
 def Show_Restaurant(rest_id):
-    return render_template('show-restaurant.html', restaurant=restaurants[0], menu_items=items)
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+    items = session.query(MenuItem).filter_by(restaurant_id=rest_id)
+    
+    return render_template('show-restaurant.html', restaurant=restaurant, menu_items=items)
 
 
 @app.route('/restaurant/add/')
