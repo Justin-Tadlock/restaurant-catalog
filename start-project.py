@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, url_for, redirect, jsonify, flash
+from database_setup import Base, Restaurant, MenuItem
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import psycopg2
@@ -25,6 +26,8 @@ item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$
 @app.route('/restaurants/')
 @app.route('/')
 def Show_All_Restaurants():
+    restaurants = session.query(Restaurant).all()
+    
     return render_template('show-all-restaurants.html', restaurants=restaurants)
 
 
