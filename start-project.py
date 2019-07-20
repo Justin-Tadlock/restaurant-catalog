@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, render_template, url_for, redirect, jsonify, flash
+from flask import Flask, render_template, url_for, redirect, jsonify, flash, request
 from database_setup import Base, Restaurant, MenuItem
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -36,12 +36,20 @@ def Show_All_Restaurants():
 def Show_Restaurant(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=rest_id)
-    
+
     return render_template('show-restaurant.html', restaurant=restaurant, menu_items=items)
 
 
-@app.route('/restaurant/add/')
+@app.route('/restaurant/add/', methods=['GET', 'POST'])
 def Add_Restaurant():
+    if request.method == 'POST':
+        new_restaurant = Restaurant(name = request.form['rest_name'])
+
+        session.add(new_restaurant)
+        session.commit()
+        
+        return redirect(url_for('Show_All_Restaurants'))
+
     return render_template('add-restaurant.html')
 
 
