@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, url_for, redirect, jsonify, flash
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import psycopg2
 
 app = Flask(__name__)
 
-#Fake Restaurants
+# Adding db functionality for CRUD operations
+engine = create_engine('sqlite:///restaurantmenu.db?check_same_thread=False')
+DBsession = sessionmaker(bind=engine)
+session = DBsession()
+
+''' #Fake Restaurants
 restaurant = {'name': 'The CRUDdy Crab', 'id': '1'}
 
 restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', 'id':'2'},{'name':'Taco Hut', 'id':'3'}]
@@ -11,7 +19,7 @@ restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', '
 
 #Fake Menu Items
 items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
-item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'}
+item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'} '''
 
 
 @app.route('/restaurants/')
