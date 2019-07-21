@@ -2,27 +2,31 @@
   <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-
   </head>
   <body>
-    <h1>Show Restaurant</h1>
+    <div class="container">
+      <h1 class="text-center title">Show Restaurant</h1>
 
-
-    <div class="">{{ restaurant.name }}</h2>
-    <h3>Menu Items</h3>
-    {% if menu_items != [] %}
-    <table>
-      {% for item in menu_items %}
-      <tr>
-        <td>
-          <i>{{ item.name }}</i>&#9;{{ item.price }}
-          <p>&#9;{{ item.description }}</p>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% else %}
-    <p class="blue-bg">There are currently no menu items for this restaurant</p>
-    {% endif %}
+      <div class="show-restaurant col-sm-12 col-md-6 m-auto">
+        <div class="row d-flex align-items-center justify-content-middle header">
+          <h1 class="text-center">{{ restaurant.name }}</h1>
+        </div>
+        <div class="row">
+          <div class="row">
+            {% if menu_items != [] %}
+              {% for item in menu_items %}
+              <div class="row col-sm-12">
+                <div class="name">{{ item.name }}</div>
+                <div class="price">{{ item.price }}</div>
+                <div class="description">{{ item.description }}</div>
+              </div>
+              {% endfor %}
+            {% else %}
+          </div>
+          <p class="blue-bg">There are currently no menu items for this restaurant</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
   </body>
 </html>
