@@ -6,3 +6,12 @@
 .bg-blue {
     background-color:cyan;
 }
+
+.bg-silver {
+    background-color:silver;
+}
+
+.page-header {
+    display:block;
+    height:10rem;
+}

@@ -2,43 +2,51 @@
   <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <link rel=stylesheet type=text/css href="../static/styles.css">
   </head>
   <body>
-    <h1>Add Menu Item</h1>
+    <div class="container col-sm-12 col-md-6">
+      <div class="row d-flex align-items-center justify-content-center page-header">
+        <h1>{{ restaurant.name }}: Add Menu Item</h1>
+      </div>
 
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">
-      <table>
-        <tr>
-          <td><label>Restaurant Name: </label></td>
-          <td>{{ restaurant.name }}</td>
-        <tr>
-          <td><label>Item Name: </label></td>
-          <td><input type=text name="item_name"></td>
-        </tr>
-        <tr>
-          <td><label>Item Price: </label></td>
-          <td><input type=text name="item_price" value="$"></td>
-        </tr>
-        <tr>
-          <td><label>Item Course:</label></td>
-          <td>
-            <select name="item_course">
-              <option>Beverage</option>
-              <option>Appetizer</option>
-              <option>Entree</option>
-              <option>Dessert</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td><label>Item Description: </label></td>
-          <td><input type=textarea name="item_description"></td>
-        </tr>
-      </table>
-      <br>
-      
-      <input type=submit value="Confirm">&nbsp;
-      <input type=button onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
-    </form>
+      <div class="row">
+        <div class="mx-auto">
+          <form method="POST" class="col-sm-12" enctype="multipart/form-data" action="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <input type=text class="form-control" id="item_name" name="item_name" placeholder="Item Name">
+              </div>
+              <div class="col-sm-6">
+                <input type=text class="form-control" id="item_price" name="item_price" placeholder="$5.99">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <select class="custom-select" id="item_course" name="item_course">
+                  <option selected>Choose Item Course...</option>
+                  <option value="1">Beverage</option>
+                  <option value="2">Appetizer</option>
+                  <option value="3">Entree</option>
+                  <option value="4">Dessert</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <textarea class="form-control" id="item_description" name="item_description" rows="3" placeholder="Describe the item here"></textarea>
+              </div> 
+            </div>
+            
+            <div class="form-group row">
+              <div class="mx-auto">
+                <input type=submit class="btn btn-primary" value="Confirm">&nbsp;
+                <input type=button class="btn btn-warning" onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
