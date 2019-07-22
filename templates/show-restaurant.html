@@ -5,27 +5,80 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="text-center title">Show Restaurant</h1>
-
-      <div class="show-restaurant col-sm-12 col-md-6 m-auto">
-        <div class="row d-flex align-items-center justify-content-middle header">
-          <h1 class="text-center">{{ restaurant.name }}</h1>
-        </div>
-        <div class="row">
-          <div class="row">
-            {% if menu_items != [] %}
-              {% for item in menu_items %}
-              <div class="row col-sm-12">
-                <div class="name">{{ item.name }}</div>
-                <div class="price">{{ item.price }}</div>
-                <div class="description">{{ item.description }}</div>
+      <div class="restaurant-menu">
+        <table class="table">
+          <tr>
+            <td colspan=2><h1 class="menu-header">{{ restaurant.name }}</h1></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="course-header">
+                <h3>Appetizers</h3>
               </div>
-              {% endfor %}
-            {% else %}
-          </div>
-          <p class="blue-bg">There are currently no menu items for this restaurant</p>
-          {% endif %}
-        </div>
+              {% if appetizer_items != [] %}
+                {% for item in appetizer_items %}
+                <div class="menu-item">
+                  <div class="item-name">{{ item.name }}</div>
+                  <div class="item-price">{{ item.price }}</div>
+                  <div class="item-description">{{ item.description }}</div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <p class="blue-bg">There are currently no appetizer items for this restaurant</p>
+              {% endif %}
+            </td>
+            <td>
+              <div class="course-header">
+                <h3>Beverages</h3>
+              </div>
+              {% if drink_items != [] %}
+                {% for item in drink_items %}
+                <div class="menu-item">
+                  <div class="item-name">{{ item.name }}</div>
+                  <div class="item-price">{{ item.price }}</div>
+                  <div class="item-description">{{ item.description }}</div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <p class="blue-bg">There are currently no drink items for this restaurant</p>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="course-header">
+                <h3>Entrees</h3>
+              </div>
+              {% if entree_items != [] %}
+                {% for item in entree_items %}
+                <div class="menu-item">
+                  <div class="item-name">{{ item.name }}</div>
+                  <div class="item-price">{{ item.price }}</div>
+                  <div class="item-description">{{ item.description }}</div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <p class="blue-bg">There are currently no entree items for this restaurant</p>
+              {% endif %}
+            </td>
+            <td>
+              <div class="course-header">
+                <h3>Desserts</h3>
+              </div>
+              {% if dessert_items != [] %}
+                {% for item in dessert_items %}
+                <div class="menu-item">
+                  <div class="item-name">{{ item.name }}</div>
+                  <div class="item-price">{{ item.price }}</div>
+                  <div class="item-description">{{ item.description }}</div>
+                </div>
+                {% endfor %}
+              {% else %}
+                <p class="blue-bg">There are currently no dessert items for this restaurant</p>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </body>
