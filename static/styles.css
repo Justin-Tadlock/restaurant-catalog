@@ -2,13 +2,19 @@ body {
     font-size: 12px;
     font-family: sans-serif;
     background-color: #888888;
+    background-image: url(./images/keith-misner-wood.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 h1,
 h2,
 h3,
 h4 {
-    color: #ffffff;
+    color: #333333;
+    font-weight: bold;
 }
 
 h1,
@@ -54,31 +60,84 @@ a {
     text-align: center;
 }
 
-.name {
-    width: 50%;
-    display: inline-block;
-    float: left;
-}
-
-.description {}
-
-.price {
-    text-align: right;
-    width: 50%;
-    float: right;
-}
-
-.editdeletepane {}
-
 .flash {
     background: #cee5f5;
+}
+
+.container {
+    background-color: white;
+    border: solid black .15rem;
 }
 
 .rest-name {
     font-size: 1.15rem;
 }
 
-.show-restaurant .header {
+table {
+    border: solid black .1rem;
+    border-top: solid black .125rem;
+}
+table a {
+    color: #333333;
+}
+
+.restaurant-menu {
+    width:100%;
+    padding:2rem;
+    background-color: white;
+    color: black;
+}
+.restaurant-menu table { 
+    border: none;
+}
+.restaurant-menu td {
+    width: 50%;
+    vertical-align: top;
+}
+
+.menu-header {
     text-align: center;
+    vertical-align: middle;
     height:5rem;
+    padding-top: .9rem;
+}
+
+.course-header {
+    width: 100%;
+    height: 4rem;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    text-align: left;
+}
+  
+.menu-item {
+    width:100%;
+    padding: 5px 0;
+    display:grid;
+    grid-gap: 0;
+    grid-template-columns: [col] 80% [col] 20%;
+    grid-template-rows: [row] auto [row] auto;
+}
+  
+.item-name {
+    grid-column: col 1;
+    grid-row: row 1;
+    font-size:1.15rem;
+    font-weight: bold;
+    border-bottom: dotted black 1px;
+}
+.item-price {
+    grid-column: col 2;
+    grid-row: row 1;
+    font-size:1rem;
+    text-align: right;
+    border-bottom: dotted black 1px;
+}
+.item-description {
+    width:75%;
+    padding-left: 0.5rem;
+    grid-column: col / span 2;
+    grid-row: row 2;
+    font-size: .9rem;
+    font-style: italic;
 }
