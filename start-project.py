@@ -35,9 +35,17 @@ def Show_All_Restaurants():
 @app.route('/restaurant/<int:rest_id>/menu')
 def Show_Restaurant(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
-    items = session.query(MenuItem).filter_by(restaurant_id=rest_id)
+    appetizer_items = session.query(MenuItem).filter_by(course="Appetizer", restaurant_id=rest_id).all()
+    drink_items = session.query(MenuItem).filter_by(course="Beverage", restaurant_id=rest_id).all()
+    entree_items = session.query(MenuItem).filter_by(course="Entree", restaurant_id=rest_id).all()
+    dessert_items = session.query(MenuItem).filter_by(course="Dessert", restaurant_id=rest_id).all()
 
-    return render_template('show-restaurant.html', restaurant=restaurant, menu_items=items)
+    return render_template('show-restaurant.html', 
+                            restaurant=restaurant, 
+                            appetizer_items=appetizer_items, 
+                            drink_items=drink_items,
+                            entree_items=entree_items,
+                            dessert_items=dessert_items)
 
 
 @app.route('/restaurant/add/', methods=['GET', 'POST'])
