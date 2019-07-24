@@ -4,40 +4,63 @@
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
-    <h1>Edit Menu Item</h1>
+<div class="container col-sm-12 col-md-6">
+      <div class="row d-flex align-items-center justify-content-center page-header">
+        <h1>{{ restaurant.name }}: Edit Menu Item</h1>
+      </div>
 
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">
-      <table>
-        <tr>
-          <td><label>Restaurant Name: </label></td>
-          <td>{{ restaurant.name }}</td>
-        <tr>
-          <td><label>Item Name: </label></td>
-          <td><input type=text name="item_name" value="{{ item.name }}"></td>
-        </tr>
-        <tr>
-          <td><label>Item Price: </label></td>
-          <td><input type=text name="item_price" value="{{ item.price }}"></td>
-        </tr>
-        <tr>
-          <td><label>Item Course:</label></td>
-          <td>
-            <select name="item_course">
-              <option>Beverage</option>
-              <option>Appetizer</option>
-              <option>Entree</option>
-              <option>Dessert</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td><label>Item Description: </label></td>
-          <td><input type=textarea name="item_description" value="{{ item.description }}"></td>
-        </tr>
-      </table>
-      <br>
-      <input type=submit value="Confirm">&nbsp;
-      <input type=button onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
-    </form>
+      <div class="row">
+        <div class="mx-auto">
+          <form method="POST" class="col-sm-12" enctype="multipart/form-data" action="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <input type=text class="form-control" id="item_name" name="item_name" value="{{ item.name }}">
+              </div>
+              <div class="col-sm-6">
+                <input type=text class="form-control" id="item_price" name="item_price" value="{{ item.price }}">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <select class="custom-select" id="item_course" name="item_course">
+                  {% if item.course == "Beverage" %}
+                  <option value="1" selected>Beverage</option>
+                  {% else %}
+                  <option value="1">Beverage</option>
+                  {% endif %}
+                  {% if item.course == "Appetizer" %}
+                  <option value="2" selected>Appetizer</option>
+                  {% else %}
+                  <option value="2">Appetizer</option>
+                  {% endif %}
+                  {% if item.course == "Entree" %}
+                  <option value="3" selected>Entree</option>
+                  {% else %}
+                  <option value="3">Entree</option>
+                  {% endif %}
+                  {% if item.course == "Dessert" %}
+                  <option value="4" selected>Dessert</option>
+                  {% else %}
+                  <option value="4">Dessert</option>
+                  {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <textarea class="form-control" id="item_description" name="item_description" rows="3">{{ item.description }}</textarea>
+              </div> 
+            </div>
+            
+            <div class="form-group row">
+              <div class="mx-auto">
+                <input type=submit class="btn btn-success" value="Confirm">&nbsp;
+                <input type=button class="btn btn-danger" onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
