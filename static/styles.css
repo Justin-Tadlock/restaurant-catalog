@@ -9,6 +9,11 @@ body {
     background-attachment: fixed;
 }
 
+.container {
+    padding-top: 2rem;
+    background-color:  #f0ead6;
+}
+
 h1,
 h2,
 h3,
