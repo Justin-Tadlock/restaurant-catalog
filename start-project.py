@@ -108,9 +108,14 @@ def Delete_Restaurant(rest_id):
 
         return redirect(url_for('Show_All_Restaurants'))
     
-    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+    rest_data = Get_Restaurant_Data(rest_id)
 
-    return render_template('delete-restaurant.html', restaurant=restaurant)
+    return render_template('delete-restaurant.html', 
+                            restaurant=rest_data['restaurant'], 
+                            appetizer_items=rest_data['appetizers'], 
+                            drink_items=rest_data['drinks'],
+                            entree_items=rest_data['entrees'],
+                            dessert_items=rest_data['desserts'])
 
 
 @app.route('/restaurants/all/items/')
