@@ -22,6 +22,22 @@ restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', '
 items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
 item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'} '''
 
+def Get_Restaurant_Data(rest_id):
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+    appetizer_items = session.query(MenuItem).filter_by(course="Appetizer", restaurant_id=rest_id).all()
+    drink_items = session.query(MenuItem).filter_by(course="Beverage", restaurant_id=rest_id).all()
+    entree_items = session.query(MenuItem).filter_by(course="Entree", restaurant_id=rest_id).all()
+    dessert_items = session.query(MenuItem).filter_by(course="Dessert", restaurant_id=rest_id).all()
+
+    rest_data = {
+        "restaurant": restaurant,
+        "appetizers": appetizer_items,
+        "drinks": drink_items,
+        "entrees": entree_items,
+        "desserts": dessert_items
+    }
+
+    return rest_data
 
 @app.route('/restaurants/')
 @app.route('/')
@@ -34,18 +50,14 @@ def Show_All_Restaurants():
 @app.route('/restaurant/<int:rest_id>/')
 @app.route('/restaurant/<int:rest_id>/menu')
 def Show_Restaurant(rest_id):
-    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
-    appetizer_items = session.query(MenuItem).filter_by(course="Appetizer", restaurant_id=rest_id).all()
-    drink_items = session.query(MenuItem).filter_by(course="Beverage", restaurant_id=rest_id).all()
-    entree_items = session.query(MenuItem).filter_by(course="Entree", restaurant_id=rest_id).all()
-    dessert_items = session.query(MenuItem).filter_by(course="Dessert", restaurant_id=rest_id).all()
+    rest_data = Get_Restaurant_Data(rest_id)
 
     return render_template('show-restaurant.html', 
-                            restaurant=restaurant, 
-                            appetizer_items=appetizer_items, 
-                            drink_items=drink_items,
-                            entree_items=entree_items,
-                            dessert_items=dessert_items)
+                            restaurant=rest_data['restaurant'], 
+                            appetizer_items=rest_data['appetizers'], 
+                            drink_items=rest_data['drinks'],
+                            entree_items=rest_data['entrees'],
+                            dessert_items=rest_data['desserts'])
 
 
 @app.route('/restaurant/add/', methods=['GET', 'POST'])
@@ -72,10 +84,14 @@ def Edit_Restaurant(rest_id):
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
     
-    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
-    items = session.query(MenuItem).filter_by(restaurant_id=rest_id).all()
+    rest_data = Get_Restaurant_Data(rest_id)
 
-    return render_template('edit-restaurant.html', restaurant=restaurant, menu_items=items)
+    return render_template('edit-restaurant.html', 
+                            restaurant=rest_data['restaurant'], 
+                            appetizer_items=rest_data['appetizers'], 
+                            drink_items=rest_data['drinks'],
+                            entree_items=rest_data['entrees'],
+                            dessert_items=rest_data['desserts'])
 
 
 @app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])

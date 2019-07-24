@@ -4,46 +4,128 @@
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
-    <h1>Edit Restaurant</h1>
+    <div class="container">
+      <h1 class="text-center">Edit Restaurant</h1>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li><strong>{{ message }}</strong></li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    <br><br>
-    {% endwith %}
-    
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">
-      <label>Name: </label><input type=text name="rest_name" value="{{ restaurant.name }}"><br><br>
-
-      <input type=submit value="Confirm">&nbsp;
-      <input type="button" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
-      <h3>Menu Items</h3>
-      <a href="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">Add menu item</a><br>
-      <table>
-        {% for item in menu_items %}
-        <tr>
-          <td>
-            <i>{{ item.name }}</i><br>
-            <p>&#9;{{ item.description }}</p>
-          </td>
-          <td>
-            {{ item.price }}
-          </td>
-          <td>
-            <a href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a><br>
-            <a href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a><br>
-          </td>
-        </tr>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <li><strong>{{ message }}</strong></li>
         {% endfor %}
-      </table>
+      </ul>
+      {% endif %}
+      <br><br>
+      {% endwith %}
+      
+      <form method="POST" enctype="multipart/form-data" action="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">
+        <div class="text-center edit-rest-name">
+          <div class="form-group row">
+            <label for="rest_name" class="col-sm-2 col-form-label">Name:</label>
+            <div class="col">
+              <input type="text" class="form-control" id="rest_name" name="rest_name" value="{{ restaurant.name }}">
+            </div>
+          </div>
 
-      <input type=submit value="Confirm">&nbsp;
-      <input type="button" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
-    </form>
+          <input type=submit class="btn btn-success" value="Confirm">&nbsp;
+          <input type="button" class="btn btn-danger" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
+        </div>
+        
+        <div class="restaurant-menu">
+          <h3>Menu Items</h3>
+          <a class="btn btn-primary mb-10" href="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">Add menu item</a>
+          <br><br>
+          <table class="table">
+            <tr>
+              <td>
+                <div class="course-header">
+                  <h3>Appetizers</h3>
+                </div>
+                {% if appetizer_items != [] %}
+                  {% for item in appetizer_items %}
+                  <div class="menu-item">
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-price">{{ item.price }}</div>
+                    <div class="item-description">{{ item.description }}</div>
+                  </div>
+                  <div class="float-right">
+                    <a class="btn btn-warning" href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="blue-bg">There are currently no appetizer items for this restaurant</p>
+                {% endif %}
+              </td>
+              <td>
+                <div class="course-header">
+                  <h3>Beverages</h3>
+                </div>
+                {% if drink_items != [] %}
+                  {% for item in drink_items %}
+                  <div class="menu-item">
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-price">{{ item.price }}</div>
+                    <div class="item-description">{{ item.description }}</div>
+                  </div>
+                  <div class="float-right">
+                    <a class="btn btn-warning" href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="blue-bg">There are currently no drink items for this restaurant</p>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="course-header">
+                  <h3>Entrees</h3>
+                </div>
+                {% if entree_items != [] %}
+                  {% for item in entree_items %}
+                  <div class="menu-item">
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-price">{{ item.price }}</div>
+                    <div class="item-description">{{ item.description }}</div>
+                  </div>
+                  <div class="float-right">
+                    <a class="btn btn-warning" href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="blue-bg">There are currently no entree items for this restaurant</p>
+                {% endif %}
+              </td>
+              <td>
+                <div class="course-header">
+                  <h3>Desserts</h3>
+                </div>
+                {% if dessert_items != [] %}
+                  {% for item in dessert_items %}
+                  <div class="menu-item">
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-price">{{ item.price }}</div>
+                    <div class="item-description">{{ item.description }}</div>
+                  </div>
+                  <div class="float-right">
+                    <a class="btn btn-warning" href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="blue-bg">There are currently no dessert items for this restaurant</p>
+                {% endif %}
+              </td>
+            </tr>
+          </table>
+
+          <input type=submit class="btn btn-success" value="Confirm">&nbsp;
+          <input type="button" class="btn btn-danger" onclick="window.location.href = '{{ url_for('Show_All_Restaurants') }}';" value="Cancel"/><br><br>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

@@ -81,7 +81,7 @@ table a {
     color: #333333;
 }
 
-.inline-blocks * {
+.inline-blocks>* {
     display:inline-block
 }
 
@@ -94,6 +94,11 @@ table a {
 }
 .restaurant .btn:first-child {
     margin-right: 1rem;
+}
+
+.edit-rest-name {
+    max-width: 25rem;
+    margin: auto;
 }
 
 .restaurant-menu {
