@@ -4,35 +4,37 @@
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
-    <h1>Delete Menu Item</h1>
+    <div class="container">
+      <h1 class="text-center">Delete Menu Item</h1>
 
-    <h3>Are you sure you want to delete the item with the following information?</h3>
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">
-      <table>
-        <tr>
-          <td><label>Restaurant Name: </label></td>
-          <td>{{ restaurant.name }}</td>
-        <tr>
-          <td><label>Item Name: </label></td>
-          <td>{{ item.name }}</td>
-        </tr>
-        <tr>
-          <td><label>Item Price: </label></td>
-          <td>{{ item.price }}</td>
-        </tr>
-        <tr>
-          <td><label>Item Course: </label></td>
-          <td>{{ item.course }}</td>
-        </tr>
-        <tr>
-          <td><label>Item Description: </label></td>
-          <td><input type=textarea value="{{ item.description }}" readonly=true></td>
-        </tr>
-      </table>
-      <br>
-      
-      <input type=submit value="Confirm">&nbsp;
-      <input type=button onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
-    </form>
+      <h3 class="text-center">Are you sure you want to delete the item with the following information?</h3>
+      <form method="POST" class="col-sm-12" enctype="multipart/form-data" action="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-6">
+            <input type=text class="form-control" id="item_name" name="item_name" value="{{ item.name }}" readonly>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <input type=text class="form-control" id="item_price" name="item_price" value="{{ item.price }}" readonly>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-12">
+            <input type=text class="form-control" id="item_course" name="item_course" value="{{ item.course }}" readonly>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <textarea class="form-control" id="item_description" name="item_description" rows="3" readonly>{{ item.description }}</textarea>
+          </div> 
+        </div>
+        
+        <div class="form-group row">
+          <div class="mx-auto">
+            <input type=submit class="btn btn-success" value="Confirm">&nbsp;
+            <input type=button class="btn btn-danger" onclick="window.location.href = '{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}';" value="Cancel">
+          </div>
+        </div>
+      </form>
+    </div>
   </body>
 </html>
