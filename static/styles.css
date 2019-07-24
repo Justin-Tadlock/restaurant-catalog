@@ -9,11 +9,6 @@ body {
     background-attachment: fixed;
 }
 
-.container {
-    padding-top: 2rem;
-    background-color:  #f0ead6;
-}
-
 h1,
 h2,
 h3,
@@ -69,8 +64,13 @@ a {
     background: #cee5f5;
 }
 
+.btn {
+    font-weight: bold;
+}
+
 .container {
-    background-color: white;
+    padding-top:2rem;
+    background-color: #f0ead6;
     border: solid black .15rem;
 }
 
