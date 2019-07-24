@@ -81,6 +81,21 @@ table a {
     color: #333333;
 }
 
+.inline-blocks * {
+    display:inline-block
+}
+
+.float-right {
+    float:right;
+}
+
+.restaurant .btn {
+    min-width: 5rem;
+}
+.restaurant .btn:first-child {
+    margin-right: 1rem;
+}
+
 .restaurant-menu {
     width:100%;
     padding:2rem;

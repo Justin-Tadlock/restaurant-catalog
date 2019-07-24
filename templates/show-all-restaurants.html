@@ -26,18 +26,18 @@
     <table class="table table-striped">
       <tr>
         <th>Name</th>
-        <th></th>
-        <th></th>
       </tr>
       {% for restaurant in restaurants %}
       <tr class="container-fluid restaurant">
         <td class="col-sm-8">
-          <div class="d-flex align-items-center">
+          <div class="inline-blocks">
             <a class="rest-name" href="{{ url_for('Show_Restaurant', rest_id=restaurant.id) }}">{{ restaurant.name }}</a>
+            <div class="float-right">
+              <a class="btn btn-warning" href="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">Edit</a>
+              <a class="btn btn-danger" href="{{ url_for('Delete_Restaurant', rest_id=restaurant.id) }}">Delete</a>
+            </div>
           </div>
         </td>
-        <td class="col-sm-2 text-center"><a class="btn btn-warning" href="{{ url_for('Edit_Restaurant', rest_id=restaurant.id) }}">Edit</a></td>
-        <td class="col-sm-2 text-center"><a class="btn btn-danger" href="{{ url_for('Delete_Restaurant', rest_id=restaurant.id) }}">Delete</a></td>
       </tr>
       {% endfor %}
     </table>
