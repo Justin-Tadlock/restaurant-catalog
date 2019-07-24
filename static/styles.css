@@ -44,6 +44,11 @@ a {
     font-size: .75em;
 }
 
+footer {
+    margin: 2rem 0;
+    text-align: center;
+}
+
 .pane {
     position: absolute;
     left: 25%;
