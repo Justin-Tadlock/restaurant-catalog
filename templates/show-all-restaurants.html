@@ -2,27 +2,10 @@
   <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-
-    <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="759537087865-l2b63nripn279cqq57ughkbvn71itkpd.apps.googleusercontent.com">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
-    <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
   </head>
   <body>
     <div class="container">
-      <div class="float-right">
-        <a href="#" onclick="signOut();">Sign out</a>
-        <script>
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-            console.log('User signed out.');
-            });
-        }
-        </script>
-      </div>
+      
       <h1 class="text-center">Restaurant Catalog</h1>
 
       {% with messages = get_flashed_messages() %}

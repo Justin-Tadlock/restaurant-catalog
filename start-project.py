@@ -7,6 +7,15 @@ from sqlalchemy.orm import sessionmaker
 import psycopg2
 import random, string
 
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+
 app = Flask(__name__)
 
 # Adding db functionality for CRUD operations
@@ -14,22 +23,105 @@ engine = create_engine('sqlite:///restaurantmenu.db?check_same_thread=False')
 DBsession = sessionmaker(bind=engine)
 session = DBsession()
 
-''' #Fake Restaurants
-restaurant = {'name': 'The CRUDdy Crab', 'id': '1'}
-
-restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', 'id':'2'},{'name':'Taco Hut', 'id':'3'}]
-
-
-#Fake Menu Items
-items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
-item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'} '''
 
 @app.route('/login')
 def Login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(1,32))
     login_session['state'] = state
+    
+    return render_template('login.html', STATE=state)
 
-    return render_template('login.html')
+@app.route('/gdisconnect', methods=['POST'])
+def Google_Logout():
+    if login_session.get('access_token') is not None and login_session.get('connect_id') is not None:
+        for property in login_session.keys():
+            login_session.pop(login_session[property], None)
+
+        flash('You have been successfully logged out.')
+    
+    return redirect(url_for('Show_All_Restaurants'))
+
+@app.route('/gconnect', methods=['POST'])
+def Google_Login():
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter'), 401)
+
+        response.headers['content-type'] = 'application/json'
+
+        return response
+    else:
+        code = request.data
+
+        # Update the authentication code
+        try:
+            oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+            oauth_flow.redirect_uri = 'postmessage'
+
+            credentials = oauth_flow.step2_exchange(code)
+        except FlowExchangeError:
+            response = make_response(json.dumps('Failed to update the authentication code'), 401)
+            response.headers['content-type'] = 'application/json'
+            dir(response)
+            
+            return response
+
+        # Validate token code
+        access_token = credentials.access_token
+        url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+        h = httplib2.Http()
+        result = json.loads(h.request(url, 'GET')[1])
+
+        if result.get('error') is not None:
+            response = make_response(json.dumps('Error: Could not validate the access token'), 401)
+            response.headers['content-type'] = 'application/json'
+            
+            return response
+
+        # Verify token for a given user
+        user_id = credentials.id_token['sub']
+        if result['user_id'] != user_id:
+            response = make_response(json.dumps('Error: The user ID does not match the given ID.'), 401)
+            response.headers['content-type'] = 'application/json'
+
+            return response
+        
+        # Verify the token is valid for this app
+        if result['issued_to'] != CLIENT_ID:
+            response = make_response(json.dumps('Error: Client ID does not match the app\'s id.'), 401)
+            response.headers['content-type'] = 'application/json'
+            print("Error: The client ID does not match the App's ID")
+
+            return response
+        stored_access_token = login_session.get('access_token')
+        stored_connect_id = login_session.get('connect_id')
+        if stored_access_token is not None and stored_connect_id is not None:
+            response = make_response(json.dumps('User is already connected'), 200)
+            response.headers['content-type'] = 'application/json'
+            response.headers['status'] = 200
+
+            return response
+
+        # Store the token and id for later use
+        login_session['access_token'] = credentials.access_token
+        login_session['connect_id'] = user_id
+
+        # Get user info
+        user_info_uri = "https://www.googleapis.com/oauth2/v1/userinfo"
+        params = { 'access_token': credentials.access_token, 'alt':'json' }
+        answer = requests.get(user_info_uri, params=params)
+        data = answer.json()
+
+        # Set the login session user info
+        login_session['username'] = data['name']
+        login_session['picture'] = data['picture']
+        login_session['email'] = data['email']
+
+        flash('You are successfully logged in!')
+
+        response = make_response(json.dumps('Logged in successfuly!'), status=200)
+        response.headers['content-type'] = 'application/json'
+
+        return response
 
 def Get_Restaurant_Data(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
