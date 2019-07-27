@@ -68,6 +68,8 @@ def Add_Restaurant():
         session.add(new_restaurant)
         session.commit()
 
+        flash('Successfully added %s.' % (new_restaurant.name))
+
         return redirect(url_for('Show_All_Restaurants'))
 
     return render_template('add-restaurant.html')
@@ -81,6 +83,8 @@ def Edit_Restaurant(rest_id):
 
         session.add(updated_restaurant)
         session.commit()
+
+        flash('Successfully updated %s.' % (updated_restaurant.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
     
@@ -141,7 +145,7 @@ def Add_Menu_Item(rest_id):
         session.add(new_menu_item)
         session.commit()
 
-        flash("Successfully added the %s menu item." % (new_menu_item.name))
+        flash("Successfully added %s." % (new_menu_item.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
 
@@ -164,7 +168,7 @@ def Edit_Menu_Item(rest_id, item_id):
         session.add(updated_item)
         session.commit()
 
-        flash('Updated item %s successfully' % (updated_item.name)) 
+        flash('Successfully updated %s.' % (updated_item.name)) 
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
 
@@ -182,7 +186,7 @@ def Delete_Menu_Item(rest_id, item_id):
             session.delete(item_to_delete)
             session.commit()
 
-            flash('Successfully removed %s' % (item_to_delete.name))
+            flash('Successfully removed %s.' % (item_to_delete.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
     
