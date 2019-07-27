@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, url_for, redirect, jsonify, flash, request
+from flask import session as login_session
 from database_setup import Base, Restaurant, MenuItem
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import psycopg2
+import random, string
 
 app = Flask(__name__)
 
@@ -22,6 +24,13 @@ restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', '
 items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
 item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'} '''
 
+@app.route('/login')
+def Login():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(1,32))
+    login_session['state'] = state
+
+    return render_template('login.html')
+
 def Get_Restaurant_Data(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
     appetizer_items = session.query(MenuItem).filter_by(course="Appetizer", restaurant_id=rest_id).all()
@@ -39,9 +48,14 @@ def Get_Restaurant_Data(rest_id):
 
     return rest_data
 
-@app.route('/restaurants/')
-@app.route('/')
+@app.route('/restaurants/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def Show_All_Restaurants():
+
+    if request.method == 'POST':
+        print(login_session['state'])
+        login_session.pop('state', None)
+
     restaurants = session.query(Restaurant).all()
     
     return render_template('show-all-restaurants.html', restaurants=restaurants)
