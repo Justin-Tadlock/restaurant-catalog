@@ -1,5 +1,6 @@
 import functools
 import os
+import json
 
 import flask
 
@@ -7,15 +8,17 @@ from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
-AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
+SECRETS = json.loads(open('client_secrets.json', 'r').read())['web']
+
+ACCESS_TOKEN_URI = SECRETS['token_uri']
+AUTHORIZATION_URL = SECRETS['auth_uri']
 
 AUTHORIZATION_SCOPE ='openid email profile'
 
-AUTH_REDIRECT_URI = os.environ.get("FN_AUTH_REDIRECT_URI", default=False)
-BASE_URI = os.environ.get("FN_BASE_URI", default=False)
-CLIENT_ID = os.environ.get("FN_CLIENT_ID", default=False)
-CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
+AUTH_REDIRECT_URI = SECRETS['redirect_uris'][0]
+BASE_URI = SECRETS['javascript_origins'][0]
+CLIENT_ID = SECRETS['client_id']
+CLIENT_SECRET = SECRETS['client_secret']
 
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
