@@ -1,0 +1,9 @@
+httplib2
+requests
+psycopg2
+authlib
+flask
+sqlalchemy
+google-api-python-client
+google-auth
+virtualenv
