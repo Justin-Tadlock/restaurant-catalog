@@ -1,7 +1,6 @@
 
-_pycache_/*
+_pycache_\*
 
 *.db
 secret_key.txt
-client_secrets.json
 client_secrets.json
