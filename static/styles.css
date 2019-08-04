@@ -115,6 +115,10 @@ table a {
     color: #333333;
 }
 
+.auth-btns {
+    display:none;
+}
+
 .inline-blocks>* {
     display:inline-block;
     height: 1.5rem;

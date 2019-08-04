@@ -1,7 +1,9 @@
 {% extends "base.html" %}
   
 {% block content %}
-  <a class="btn btn-primary mb-10" href="{{ url_for('Add_Restaurant') }}">Add new restaurant</a>
+  <div class="auth-btns">
+    <a class="btn btn-primary mb-10" href="{{ url_for('Add_Restaurant') }}">Add new restaurant</a>
+  </div>
   <br><br>
 
   <table class="table table-striped">
