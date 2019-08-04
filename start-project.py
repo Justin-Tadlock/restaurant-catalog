@@ -117,7 +117,9 @@ def Show_Restaurant(rest_id):
 
 @app.route('/restaurant/add/', methods=['GET', 'POST'])
 def Add_Restaurant():
-    if request.method == 'POST' and gAuth.Is_Authenticated():
+    if not gAuth.Is_Authenticated():
+        return redirect(url_for('Show_All_Restaurants'))
+    if request.method == 'POST':
         new_restaurant = Restaurant(name=request.form['rest_name'])
 
         session.add(new_restaurant)
@@ -126,15 +128,16 @@ def Add_Restaurant():
         flash('Successfully added %s.' % (new_restaurant.name))
 
         return redirect(url_for('Show_All_Restaurants'))
-    elif gAuth.Is_Authenticated():
-        return render_template('add-restaurant.html')
     else:
-        return redirect(url_for('Show_All_Restaurants'))
+        return render_template('add-restaurant.html')
 
 
 @app.route('/restaurant/<int:rest_id>/edit', methods=['GET', 'POST'])
 def Edit_Restaurant(rest_id):
-    if request.method == 'POST' and gAuth.Is_Authenticated():
+    if not gAuth.Is_Authenticated():
+        return redirect(url_for('Show_All_Restaurants'))
+
+    if request.method == 'POST':
         updated_restaurant = session.query(
             Restaurant).filter_by(id=rest_id).one()
         updated_restaurant.name = request.form['rest_name']
@@ -145,7 +148,7 @@ def Edit_Restaurant(rest_id):
         flash('Successfully updated %s.' % (updated_restaurant.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    elif gAuth.Is_Authenticated():
+    else:
         rest_data = Get_Restaurant_Data(rest_id)
 
         return render_template('edit-restaurant.html',
@@ -155,13 +158,13 @@ def Edit_Restaurant(rest_id):
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'])
 
-    else:
-        return redirect(url_for('Show_All_Restaurants'))
-
 
 @app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])
 def Delete_Restaurant(rest_id):
-    if request.method == 'POST' and gAuth.Is_Authenticated():
+    if not gAuth.Is_Authenticated():
+        return redirect(url_for('Show_All_Restaurants'))
+
+    if request.method == 'POST':
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         if restaurant != []:
             session.query(MenuItem).filter_by(restaurant_id=rest_id).delete()
@@ -172,7 +175,7 @@ def Delete_Restaurant(rest_id):
         session.commit()
 
         return redirect(url_for('Show_All_Restaurants'))
-    elif gAuth.Is_Authenticated():
+    else:
         rest_data = Get_Restaurant_Data(rest_id)
 
         return render_template('delete-restaurant.html',
@@ -181,8 +184,7 @@ def Delete_Restaurant(rest_id):
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'])
-    else:
-        return redirect(url_for('Show_All_Restaurants'))
+        
 
 
 @app.route('/restaurants/all/items/')
@@ -194,7 +196,10 @@ def Show_All_Items():
 
 @app.route('/restaurant/<int:rest_id>/add', methods=['GET', 'POST'])
 def Add_Menu_Item(rest_id):
-    if request.method == 'POST' and gAuth.Is_Authenticated():
+    if not gAuth.Is_Authenticated():
+        return redirect(url_for('Show_All_Restaurants'))
+
+    if request.method == 'POST':
         form = request.form
 
         new_menu_item = MenuItem(
@@ -211,17 +216,18 @@ def Add_Menu_Item(rest_id):
         flash("Successfully added %s." % (new_menu_item.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    elif gAuth.Is_Authenticated():
+    else:
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
         return render_template('add-menu-item.html', restaurant=restaurant)
-    else:
-        return redirect(url_for('Show_All_Restaurants'))
-
+    
 
 @app.route('/restaurant/<int:rest_id>/edit/<int:item_id>/', methods=['GET', 'POST'])
 def Edit_Menu_Item(rest_id, item_id):
-    if request.method == 'POST' and gAuth.Is_Authenticated():
+    if not gAuth.Is_Authenticated():
+        return redirect(url_for('Show_All_Restaurants'))
+
+    if request.method == 'POST':
         form = request.form
 
         updated_item = session.query(MenuItem).filter_by(id=item_id).one()
@@ -237,18 +243,19 @@ def Edit_Menu_Item(rest_id, item_id):
         flash('Successfully updated %s.' % (updated_item.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    elif gAuth.Is_Authenticated():
+    else:
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('edit-menu-item.html', restaurant=restaurant, item=item)
-    else:
-        return redirect(url_for('Show_All_Restaurants'))
-
+    
 
 @app.route('/restaurant/<int:rest_id>/delete/<int:item_id>/', methods=['GET', 'POST'])
 def Delete_Menu_Item(rest_id, item_id):
-    if request.method == 'POST' and gAuth.Is_Authenticated():
+    if not gAuth.Is_Authenticated():
+        return redirect(url_for('Show_All_Restaurants'))
+
+    if request.method == 'POST':
         item_to_delete = session.query(MenuItem).filter_by(id=item_id).one()
         if item_to_delete != []:
             session.delete(item_to_delete)
@@ -257,14 +264,13 @@ def Delete_Menu_Item(rest_id, item_id):
             flash('Successfully removed %s.' % (item_to_delete.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    elif gAuth.Is_Authenticated():
+    
+    else:
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('delete-menu-item.html', restaurant=restaurant, item=item)
-    else:
-        return redirect(url_for('Show_All_Restaurants'))
-
+    
 
 @app.route('/restaurants/JSON')
 def Get_Restaurants_JSON():
