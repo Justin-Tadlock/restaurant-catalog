@@ -98,7 +98,6 @@ def Show_All_Restaurants():
     return render_template(
         'show-all-restaurants.html',
         title="Restaurant Catalog",
-        client_id=gAuth.CLIENT_ID,
         restaurants=restaurants
     )
 
