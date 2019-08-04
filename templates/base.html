@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    
+    <meta name="google-signin-client_id" content="{{ client_id }}">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+  </head>
+  <body>
+    {% block nav %}
+    <div class="nav">
+        <div class="sign-in">
+            <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        </div>
+        <div class="sign-out">
+            <a href="#" onclick="signOut();">Sign Out</a>
+        </div>
+    </div>
+    {% endblock %}
+
+    <div class="container">
+      {% if title %}
+        <h1 class="text-center">{{ title }}</h1>
+      {% else %}
+        <h1 class="text-center">Page Title</h1>
+      {% endif %}
+      <br>
+      {% block flash_block %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <br>
+      {% endblock %}
+
+      {% block content %}{% endblock %}
+
+      <footer>
+        &copy; Justin Tadlock<br><br>
+        Background courtesy of <br>
+        <a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@keithmisner?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from Keith Misner"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-2px;fill:white" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z"></path></svg></span><span style="display:inline-block;padding:2px 3px">Keith Misner</span></a>
+      </footer>
+    </div>
+  </body>
+</html>

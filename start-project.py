@@ -43,7 +43,20 @@ def Login():
 
 @app.route(gAuth.CLIENT_REDIRECT, methods=['POST'])
 def Google_Login():
-        return gAuth.Authentication_Callback()
+    return gAuth.Authentication_Callback()
+
+@app.route('/authenticated')
+def Is_Logged_In():
+    if gAuth.Is_Authenticated():
+        print("authenticated")
+        return make_response(
+            jsonify(message="Logged in", status=201)
+        )
+
+    print("not authenticated")
+    return make_response(
+        jsonify(message="Not logged in", status=202)
+    )
 
 def Get_Restaurant_Data(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
@@ -69,8 +82,10 @@ def Show_All_Restaurants():
     
     return render_template(
         'show-all-restaurants.html', 
-        restaurants=restaurants, 
-        authenticated=gAuth.Is_Authenticated())
+        title="Restaurant Catalog",
+        client_id=gAuth.CLIENT_ID,
+        restaurants=restaurants
+    )
 
 
 @app.route('/restaurant/<int:rest_id>/')

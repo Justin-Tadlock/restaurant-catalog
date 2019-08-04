@@ -1,11 +1,38 @@
+window.onload = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/authenticated');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        response = JSON.parse(xhr.responseText);
+
+        if (response.status == 201) {
+            console.log("User logged in");
+            showSignInBtn(false);            
+        }
+        else if (response.status == 202) {
+            console.log("User not logged in");
+            showSignInBtn(true);            
+        }
+    }
+    xhr.send();
+}
+
+
+
 function showSignInBtn(setVisible) {
     if(setVisible) {
         $('.sign-in').css('display', 'block');
         $('.sign-out').css('display', 'none');
+
+        // Hide the edit buttons
+        $('.auth-btns').css('display', 'none');
     }
     else {
         $('.sign-in').css('display', 'none');
         $('.sign-out').css('display', 'block');
+        
+        // Show the edit buttons
+        $('.auth-btns').css('display', 'block');
     }
 }
 
@@ -20,15 +47,6 @@ function signOut() {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
         console.log('Logging out the user.');
-
-        $.ajax({
-            type:'GET',
-            url:'/',
-            success: function() {
-                window.location.href = '/';
-            }
-        }) 
-
         showSignInBtn(true);
     }
     xhr.send('logout=true');
@@ -52,20 +70,8 @@ function onSignIn(googleUser) {
             response = JSON.parse(xhr.responseText);
 
             if (response['status'] == 200) {
-                $.ajax({
-                    type:'GET',
-                    url:'/',
-                    success: function() {
-                        result_text = response['message'] + " Reloading in 4 seconds...";
-                        $('.result').html(result_text);
-                        setTimeout(function() {
-                            window.location.href="/";
-                        }, 4000);
-                    }
-                })
+                showSignInBtn(false);
             }
-
-            showSignInBtn(false);
         };
         xhr.send('idtoken=' + id_token);
     }
