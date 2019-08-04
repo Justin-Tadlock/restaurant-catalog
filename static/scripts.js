@@ -3,7 +3,7 @@ window.onload = function() {
     xhr.open('GET', '/authenticated');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-        response = JSON.parse(xhr.responseText);
+        var response = JSON.parse(xhr.responseText);
 
         if (response.status == 201) {
             console.log("User logged in");
