@@ -11,7 +11,7 @@ from flask import (
     make_response
 )
 
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, User, Restaurant, MenuItem
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -22,22 +22,38 @@ import httplib2
 import json
 import requests
 
-import google_authentication as gAuth
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 
 app = Flask(__name__)
+app.debug = True
 
 # Add the secret key for the app
 try:
     app.secret_key = open('secret_key.txt', 'r').read()
 except:
-    print('Error: Please create a \'secret_key.txt\' file within the app\'s directory')
+    print('ERROR: Please create a \'secret_key.txt\' file within the app\'s directory')
+
+
+# Get Secrets Data
+try:
+    SECRET_DATA = json.loads(open('client_secrets.json', 'r').read())['web']
+    CLIENT_ID = SECRET_DATA['client_id']
+    CLIENT_SECRET = SECRET_DATA['client_secret']
+
+    # Get the redirect uri from the file in the form of '/url'
+    CLIENT_REDIRECT = SECRET_DATA['redirect_uris'][0]
+    CLIENT_REDIRECT = '/%s' % (CLIENT_REDIRECT.split('/')[-1])
+except:
+    print('ERROR: Please download your \'client_secrets.json\' file from your \'https://console.developers.google.com\' project')
+
 
 # Add the client id to all templates
 try:
-    app.add_template_global(name='client_id', f=gAuth.CLIENT_ID)
+    app.add_template_global(name='client_id', f=CLIENT_ID)
 except:
-    print('Error: Could not add jinja2 global client id variable')
+    print('ERROR: Could not add jinja2 global client id variable')
 
 
 # Adding db functionality for CRUD operations
@@ -46,19 +62,152 @@ DBsession = sessionmaker(bind=engine)
 session = DBsession()
 
 
+def Log(msg, err=False):
+    if not err and app.debug:
+        print('INFO: %s' % (msg))
+    else:
+        print('ERROR')
+
+
+def Is_Authenticated():
+    return ('user' in login_session)
+
+
+def Get_User_Info(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+
+        if user != []:
+            Log('Finding user %s... Found!' % (email))
+            return True
+        else:
+            Log('Finding user %s... Not found!' % (email))
+            return None
+    except:
+        return None
+
+
+def Add_User(user):
+    try:
+        new_user = User(name=user.get('name'),
+                        email=user.get('email'),
+                        picture=user.get('picture'))
+        session.add(new_user)
+        session.commit()
+
+        Log('Successfully added the user.')
+
+        return True
+    except:
+        err_msg = (
+            "".join((
+                "Could not add the user to the db with the following information: \n",
+                "{\n",
+                "   name: ", user.get('name'), "\n",
+                "   email: ", user.get('email'), "\n",
+                "   picture: ", user.get('picture'), "\n"
+                "}"
+            ))
+        )
+        Log(err_msg, True)
+
+        return False
+
+
 @app.route('/login')
 def Login():
-    return render_template('login.html', client_id=gAuth.CLIENT_ID)
+    return render_template('login.html', client_id=CLIENT_ID)
 
 
-@app.route(gAuth.CLIENT_REDIRECT, methods=['POST'])
+@app.route(CLIENT_REDIRECT, methods=['POST'])
 def Google_Login():
-    return gAuth.Authentication_Callback()
+    try:
+        # Check if the POST request is trying to log in
+        if 'idtoken' in request.form:
+            if not Is_Authenticated():
+                # Get the token from the POST form
+                token = request.form['idtoken']
+
+                # Specify the CLIENT_ID of the app that accesses the backend:
+                idinfo = id_token.verify_oauth2_token(
+                    token,
+                    requests.Request(),
+                    CLIENT_ID
+                )
+
+                verified_providers = [
+                    'accounts.google.com',
+                    'https://accounts.google.com'
+                ]
+
+                if idinfo['iss'] not in verified_providers:
+                    raise ValueError('Wrong issuer.')
+
+                # If we don't have the user in our db, add them.
+                if Get_User_Info(idinfo['email']) is None:
+                    Log("User is not within the db. Adding them...")
+
+                    # Attempt to add the user
+                    if Add_User(idinfo) != True:
+                        return make_response(jsonify(
+                            message="Error, could not add the user to the database.",
+                            status=501
+                        ))
+
+                # ID token is valid.
+                # Get the user's Google Account ID and the other profile
+                # information from the decoded token, then add the token to
+                # the flask session variable
+                login_session['user'] = {
+                    'name': idinfo['name'],
+                    'email': idinfo['email'],
+                    'picture': idinfo['picture']
+                }
+
+                Log('User has been successfully logged in.')
+
+                ret_response = make_response(
+                    jsonify(
+                        message='Successfully verified. You are logged in!',
+                        status=200)
+                )
+
+            # If the user is already logged in,
+            # we don't need to do any authentication.
+            else:
+                Log('User is already logged in.')
+
+                ret_response = make_response(
+                    jsonify(message='User is already logged in.', status=201)
+                )
+
+        # If the POST request does not contain the idtoken field,
+        # that means we are trying to log out.
+        else:
+            # When we have a logged in user,
+            # we should remove their token from our
+            # logged in sessions variable
+            if Is_Authenticated():
+                Log('User has been logged out.')
+
+                login_session.pop('user', None)
+
+            ret_response = make_response(
+                jsonify(message="User has been logged out", status=200)
+            )
+
+    except ValueError:
+        # Invalid token
+        ret_response = make_response(
+            jsonify(message='ERROR: unable to verify token id', status=401)
+        )
+
+    return ret_response
 
 
 @app.route('/authenticated')
 def Is_Logged_In():
-    if gAuth.Is_Authenticated():
+    if Is_Authenticated():
         return make_response(
             jsonify(message="Logged in", status=201)
         )
@@ -117,8 +266,9 @@ def Show_Restaurant(rest_id):
 
 @app.route('/restaurant/add/', methods=['GET', 'POST'])
 def Add_Restaurant():
-    if not gAuth.Is_Authenticated():
+    if not Is_Authenticated():
         return redirect(url_for('Show_All_Restaurants'))
+
     if request.method == 'POST':
         new_restaurant = Restaurant(name=request.form['rest_name'])
 
@@ -134,7 +284,7 @@ def Add_Restaurant():
 
 @app.route('/restaurant/<int:rest_id>/edit', methods=['GET', 'POST'])
 def Edit_Restaurant(rest_id):
-    if not gAuth.Is_Authenticated():
+    if not Is_Authenticated():
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -161,7 +311,7 @@ def Edit_Restaurant(rest_id):
 
 @app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])
 def Delete_Restaurant(rest_id):
-    if not gAuth.Is_Authenticated():
+    if not Is_Authenticated():
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -184,7 +334,6 @@ def Delete_Restaurant(rest_id):
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'])
-        
 
 
 @app.route('/restaurants/all/items/')
@@ -196,7 +345,7 @@ def Show_All_Items():
 
 @app.route('/restaurant/<int:rest_id>/add', methods=['GET', 'POST'])
 def Add_Menu_Item(rest_id):
-    if not gAuth.Is_Authenticated():
+    if not Is_Authenticated():
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -220,11 +369,11 @@ def Add_Menu_Item(rest_id):
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
         return render_template('add-menu-item.html', restaurant=restaurant)
-    
+
 
 @app.route('/restaurant/<int:rest_id>/edit/<int:item_id>/', methods=['GET', 'POST'])
 def Edit_Menu_Item(rest_id, item_id):
-    if not gAuth.Is_Authenticated():
+    if not Is_Authenticated():
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -248,11 +397,11 @@ def Edit_Menu_Item(rest_id, item_id):
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('edit-menu-item.html', restaurant=restaurant, item=item)
-    
+
 
 @app.route('/restaurant/<int:rest_id>/delete/<int:item_id>/', methods=['GET', 'POST'])
 def Delete_Menu_Item(rest_id, item_id):
-    if not gAuth.Is_Authenticated():
+    if not Is_Authenticated():
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -264,13 +413,13 @@ def Delete_Menu_Item(rest_id, item_id):
             flash('Successfully removed %s.' % (item_to_delete.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    
+
     else:
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('delete-menu-item.html', restaurant=restaurant, item=item)
-    
+
 
 @app.route('/restaurants/JSON')
 def Get_Restaurants_JSON():
@@ -296,5 +445,4 @@ def Get_Menu_Item_JSON(rest_id, item_id):
 
 if __name__ == '__main__':
     app.secret_key = 'my_super_secret_but_not_really_key'
-    app.debug = True
     app.run(host='0.0.0.0', port=5000)
