@@ -277,7 +277,6 @@ def Show_All_Restaurants():
     return render_template(
         'show-all-restaurants.html',
         title="Restaurant Catalog",
-        restaurants=restaurants
         restaurants=restaurants,
         user_id=Get_User_ID()
     )
@@ -293,7 +292,6 @@ def Show_Restaurant(rest_id):
                            appetizer_items=rest_data['appetizers'],
                            drink_items=rest_data['drinks'],
                            entree_items=rest_data['entrees'],
-                           dessert_items=rest_data['desserts'])
                            dessert_items=rest_data['desserts'],
                            user_id=Get_User_ID())
 
@@ -348,7 +346,6 @@ def Edit_Restaurant(rest_id):
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
-                               dessert_items=rest_data['desserts'])
                                dessert_items=rest_data['desserts'],
                                user_id=Get_User_ID())
 
@@ -382,7 +379,6 @@ def Delete_Restaurant(rest_id):
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
-                               dessert_items=rest_data['desserts'])
                                dessert_items=rest_data['desserts'],
                                user_id=Get_User_ID())
 
