@@ -1,5 +1,7 @@
 <html>
   <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 
@@ -23,10 +25,13 @@
     {% endblock %}
 
     <div class="container">
+      {% if back_url %}
+      <div>
+        <a href="{{ back_url }}" class="btn btn-dark"><i class="material-icons">arrow_back</i></a>
+      </div>
+      {% endif %}
       {% if title %}
         <h1 class="text-center">{{ title }}</h1>
-      {% else %}
-        <h1 class="text-center">Page Title</h1>
       {% endif %}
       <br>
       {% block flash_block %}
