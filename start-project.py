@@ -387,7 +387,6 @@ def Delete_Restaurant(rest_id):
 
         return render_template('delete-restaurant.html',
                                back_url=url_for('Show_All_Restaurants'),
-                               title=rest_data['restaurant'].name,
                                restaurant=rest_data['restaurant'],
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
