@@ -278,6 +278,8 @@ def Show_All_Restaurants():
         'show-all-restaurants.html',
         title="Restaurant Catalog",
         restaurants=restaurants
+        restaurants=restaurants,
+        user_id=Get_User_ID()
     )
 
 
@@ -292,6 +294,8 @@ def Show_Restaurant(rest_id):
                            drink_items=rest_data['drinks'],
                            entree_items=rest_data['entrees'],
                            dessert_items=rest_data['desserts'])
+                           dessert_items=rest_data['desserts'],
+                           user_id=Get_User_ID())
 
 
 @app.route('/restaurant/add/', methods=['GET', 'POST'])
@@ -345,6 +349,8 @@ def Edit_Restaurant(rest_id):
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'])
+                               dessert_items=rest_data['desserts'],
+                               user_id=Get_User_ID())
 
 
 @app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])
@@ -377,6 +383,8 @@ def Delete_Restaurant(rest_id):
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'])
+                               dessert_items=rest_data['desserts'],
+                               user_id=Get_User_ID())
 
 
 @app.route('/restaurants/all/items/')
@@ -414,6 +422,8 @@ def Add_Menu_Item(rest_id):
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
         return render_template('add-menu-item.html', restaurant=restaurant)
+                           restaurant=restaurant,
+                           user_id=Get_User_ID())
 
 
 @app.route('/restaurant/<int:rest_id>/edit/<int:item_id>/', methods=['GET', 'POST'])
@@ -446,6 +456,8 @@ def Edit_Menu_Item(rest_id, item_id):
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('edit-menu-item.html', restaurant=restaurant, item=item)
+                               item=item,
+                               user_id=Get_User_ID())
 
 
 @app.route('/restaurant/<int:rest_id>/delete/<int:item_id>/', methods=['GET', 'POST'])
@@ -471,6 +483,8 @@ def Delete_Menu_Item(rest_id, item_id):
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('delete-menu-item.html', restaurant=restaurant, item=item)
+                               item=item,
+                               user_id=Get_User_ID())
 
 
 @app.route('/restaurants/JSON')
