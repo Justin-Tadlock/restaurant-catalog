@@ -242,7 +242,6 @@ def Is_Logged_In():
         jsonify(message="Not logged in", status=202)
     )
 
-
 def Get_Restaurant_Data(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
     appetizer_items = session.query(MenuItem).filter_by(
@@ -293,6 +292,7 @@ def Show_Restaurant(rest_id):
 @app.route('/restaurant/add/', methods=['GET', 'POST'])
 def Add_Restaurant():
     if not Is_Authenticated():
+        flash('Warning: You are not logged in. You must log in to add a restaurant.')
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -314,6 +314,7 @@ def Add_Restaurant():
 @app.route('/restaurant/<int:rest_id>/edit', methods=['GET', 'POST'])
 def Edit_Restaurant(rest_id):
     if not Is_Authenticated():
+        flash('Warning: You are not logged in. You must log in to edit a restaurant.')
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -344,6 +345,7 @@ def Edit_Restaurant(rest_id):
 @app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])
 def Delete_Restaurant(rest_id):
     if not Is_Authenticated():
+        flash('Warning: You are not logged in. You must log in to delete a restaurant.')
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -382,6 +384,7 @@ def Show_All_Items():
 @app.route('/restaurant/<int:rest_id>/add', methods=['GET', 'POST'])
 def Add_Menu_Item(rest_id):
     if not Is_Authenticated():
+        flash('Warning: You are not logged in. You must log in to add a menu item.')
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -411,6 +414,7 @@ def Add_Menu_Item(rest_id):
 @app.route('/restaurant/<int:rest_id>/edit/<int:item_id>/', methods=['GET', 'POST'])
 def Edit_Menu_Item(rest_id, item_id):
     if not Is_Authenticated():
+        flash('Warning: You are not logged in. You must log in to edit a menu item.')
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
@@ -442,6 +446,7 @@ def Edit_Menu_Item(rest_id, item_id):
 @app.route('/restaurant/<int:rest_id>/delete/<int:item_id>/', methods=['GET', 'POST'])
 def Delete_Menu_Item(rest_id, item_id):
     if not Is_Authenticated():
+        flash('Warning: You are not logged in. You must log in to delete a menu item.')
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
