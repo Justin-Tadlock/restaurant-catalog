@@ -98,6 +98,11 @@ def Get_User_Info(user_info):
         Log('   Finding user %s... Not found!' % (user_info.get('email')))
         return None
     
+def Get_User_ID():
+    if Is_Authenticated():
+        return login_session['user']['user_id']
+    else:
+        return -1
 
 def Add_User(user_info):
     Log('Enter: Add_User')
