@@ -48,6 +48,12 @@ function signOut() {
     xhr.onload = function() {
         console.log('Logging out the user.');
         showSignInBtn(true);
+
+        loc = window.location.href
+
+        if (loc.search('edit') > 0 || loc.search('add') > 0 || loc.search('delete') > 0) {
+            window.location.href = '/'
+        }
     }
     xhr.send('logout=true');
     
