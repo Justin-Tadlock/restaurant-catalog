@@ -319,12 +319,15 @@ def Edit_Restaurant(rest_id):
     if request.method == 'POST':
         updated_restaurant = session.query(
             Restaurant).filter_by(id=rest_id).one()
-        updated_restaurant.name = request.form['rest_name']
 
-        session.add(updated_restaurant)
-        session.commit()
+        if updated_restaurant.user_id == login_session['user']['user_id']:
+            updated_restaurant.name = request.form['rest_name']
+            session.add(updated_restaurant)
+            session.commit()
 
-        flash('Successfully updated %s.' % (updated_restaurant.name))
+            flash('Successfully updated %s.' % (updated_restaurant.name))
+        else:
+            flash('Error: You are not authorized to modify %s.' % (updated_restaurant.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
     else:
