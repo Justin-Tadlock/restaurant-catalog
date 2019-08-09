@@ -416,17 +416,20 @@ def Edit_Menu_Item(rest_id, item_id):
     if request.method == 'POST':
         form = request.form
 
-        updated_item = session.query(MenuItem).filter_by(id=item_id).one()
+        menu_item = session.query(MenuItem).filter_by(id=item_id).one()
 
-        updated_item.name = form['item_name']
-        updated_item.price = form['item_price']
-        updated_item.course = form['item_course']
-        updated_item.description = form['item_description']
+        if menu_item.user_id == login_session['user']['user_id']:
+            menu_item.name = form['item_name']
+            menu_item.price = form['item_price']
+            menu_item.course = form['item_course']
+            menu_item.description = form['item_description']
 
-        session.add(updated_item)
-        session.commit()
+            session.add(menu_item)
+            session.commit()
 
-        flash('Successfully updated %s.' % (updated_item.name))
+            flash('Successfully updated %s.' % (menu_item.name))
+        else:
+            flash('Error: You are not authorized to modify %s.' % menu_item.name)
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
     else:
