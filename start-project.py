@@ -445,12 +445,14 @@ def Delete_Menu_Item(rest_id, item_id):
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
-        item_to_delete = session.query(MenuItem).filter_by(id=item_id).one()
-        if item_to_delete != []:
-            session.delete(item_to_delete)
+        menu_item = session.query(MenuItem).filter_by(id=item_id).one()
+        if menu_item != [] and menu_item.user_id == login_session['user']['user_id']:
+            session.delete(menu_item)
             session.commit()
 
-            flash('Successfully removed %s.' % (item_to_delete.name))
+            flash('Successfully removed %s.' % (menu_item.name))
+        else:
+            flash('Error: You are not authorized to delete %s.' % menu_item.name)
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
 
