@@ -48,6 +48,9 @@ function signOut() {
         if (loc.search('edit') > 0 || loc.search('add') > 0 || loc.search('delete') > 0) {
             window.location.href = '/'
         }
+        else {
+            location.reload();
+        }
     }
     xhr.send('logout=true');
     
@@ -71,6 +74,7 @@ function onSignIn(googleUser) {
 
             if (response['status'] == 200) {
                 showSignInBtn(false);
+                location.reload();
             }
         };
         xhr.send('idtoken=' + id_token);
