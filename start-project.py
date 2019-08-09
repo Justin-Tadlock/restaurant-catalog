@@ -78,10 +78,10 @@ def Get_User_Info(user_info):
     Log('Enter: Get_User_Info')
 
     user = session.query(User).filter_by(
-        name=user_info.get('name'), 
+        name=user_info.get('name'),
         email=user_info.get('email')
     ).one_or_none()
-    
+
     if user is not None:
         Log('   Finding user %s... Found!' % (user.email))
 
@@ -97,12 +97,14 @@ def Get_User_Info(user_info):
     else:
         Log('   Finding user %s... Not found!' % (user_info.get('email')))
         return None
-    
+
+
 def Get_User_ID():
     if Is_Authenticated():
         return login_session['user']['user_id']
     else:
         return -1
+
 
 def Add_User(user_info):
     Log('Enter: Add_User')
@@ -120,7 +122,6 @@ def Add_User(user_info):
 
         login_session['user'] = Get_User_Info(user_info)
         Log('   User_id: %d' % login_session['user']['user_id'])
-
 
         Log('Successfully added the user.')
 
@@ -180,7 +181,7 @@ def Google_Login():
                     'picture': idinfo.get('picture')
                 }
                 Log(
-                    'profile_info Details: %s' % 
+                    'profile_info Details: %s' %
                     json.dumps(profile_info)
                 )
 
@@ -247,6 +248,7 @@ def Is_Logged_In():
         jsonify(message="Not logged in", status=202)
     )
 
+
 def Get_Restaurant_Data(rest_id):
     restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
     appetizer_items = session.query(MenuItem).filter_by(
@@ -288,6 +290,7 @@ def Show_Restaurant(rest_id):
     rest_data = Get_Restaurant_Data(rest_id)
 
     return render_template('show-restaurant.html',
+                           back_url=url_for('Show_All_Restaurants'),
                            restaurant=rest_data['restaurant'],
                            appetizer_items=rest_data['appetizers'],
                            drink_items=rest_data['drinks'],
@@ -304,7 +307,7 @@ def Add_Restaurant():
 
     if request.method == 'POST':
         new_restaurant = Restaurant(
-            name=request.form['rest_name'], 
+            name=request.form['rest_name'],
             user_id=login_session['user']['user_id']
         )
 
