@@ -443,10 +443,10 @@ def Edit_Menu_Item(rest_id, item_id):
         flash('Warning: You are not logged in. You must log in to edit a menu item.')
         return redirect(url_for('Show_All_Restaurants'))
 
+    menu_item = session.query(MenuItem).filter_by(id=item_id).one()
+
     if request.method == 'POST':
         form = request.form
-
-        menu_item = session.query(MenuItem).filter_by(id=item_id).one()
 
         if menu_item.user_id == login_session['user']['user_id']:
             menu_item.name = form['item_name']
@@ -462,15 +462,20 @@ def Edit_Menu_Item(rest_id, item_id):
             flash('Error: You are not authorized to modify %s.' % menu_item.name)
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    else:
+
+    if menu_item.user_id == Get_User_ID():
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('edit-menu-item.html',
                                back_url=url_for(
                                    'Edit_Restaurant', rest_id=rest_id),
+                               title="Edit Menu Item",
+                               restaurant=restaurant,
                                item=item,
                                user_id=Get_User_ID())
+    else:
+        return redirect(url_for('Show_Restaurant', rest_id=rest_id))
 
 
 @app.route('/restaurant/<int:rest_id>/delete/<int:item_id>/', methods=['GET', 'POST'])
