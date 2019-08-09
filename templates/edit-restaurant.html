@@ -16,7 +16,9 @@
     
     <div class="restaurant-menu">
       <h3>Menu Items</h3>
+      {% if restaurant.user_id == user_id %}
       <a class="btn btn-primary mb-10" href="{{ url_for('Add_Menu_Item', rest_id=restaurant.id) }}">Add menu item</a>
+      {% endif %}
       <br><br>
       <table class="table">
         <tr>
@@ -31,10 +33,12 @@
                 <div class="item-price">{{ item.price }}</div>
                 <div class="item-description">{{ item.description }}</div>
               </div>
+              {% if item.user_id == user_id %}
               <div class="float-right">
                 <a class="btn btn-warning" href="{{ url_for('Edit_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Edit</a>
                 <a class="btn btn-danger" href="{{ url_for('Delete_Menu_Item', rest_id=restaurant.id, item_id=item.id) }}">Delete</a>
               </div>
+              {% endif%}
               {% endfor %}
             {% else %}
               <p class="blue-bg">There are currently no appetizer items for this restaurant</p>
