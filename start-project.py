@@ -345,13 +345,17 @@ def Delete_Restaurant(rest_id):
 
     if request.method == 'POST':
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
-        if restaurant != []:
-            session.query(MenuItem).filter_by(restaurant_id=rest_id).delete()
 
-        flash('Successfully deleted %s.' % (restaurant.name))
+        if restaurant.user_id == login_session['user']['user_id']:
+            if restaurant != []:
+                session.query(MenuItem).filter_by(restaurant_id=rest_id).delete()
 
-        session.delete(restaurant)
-        session.commit()
+            flash('Successfully deleted %s.' % (restaurant.name))
+
+            session.delete(restaurant)
+            session.commit()
+        else:
+            flash('Error: You are not authorized to delete %s' % restaurant.name)
 
         return redirect(url_for('Show_All_Restaurants'))
     else:
