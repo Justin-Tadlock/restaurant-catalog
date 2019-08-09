@@ -315,7 +315,8 @@ def Add_Restaurant():
 
         return redirect(url_for('Show_All_Restaurants'))
     else:
-        return render_template('add-restaurant.html')
+        return render_template('add-restaurant.html',
+                               back_url=url_for('Show_All_Restaurants'))
 
 
 @app.route('/restaurant/<int:rest_id>/edit', methods=['GET', 'POST'])
@@ -342,6 +343,7 @@ def Edit_Restaurant(rest_id):
         rest_data = Get_Restaurant_Data(rest_id)
 
         return render_template('edit-restaurant.html',
+                               back_url=url_for('Show_All_Restaurants'),
                                restaurant=rest_data['restaurant'],
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
@@ -375,6 +377,7 @@ def Delete_Restaurant(rest_id):
         rest_data = Get_Restaurant_Data(rest_id)
 
         return render_template('delete-restaurant.html',
+                               back_url=url_for('Show_All_Restaurants'),
                                restaurant=rest_data['restaurant'],
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
@@ -418,6 +421,9 @@ def Add_Menu_Item(rest_id):
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
         return render_template('add-menu-item.html', restaurant=restaurant)
+    return render_template('add-menu-item.html',
+                           back_url=url_for('Edit_Restaurant',
+                                            rest_id=rest_id),
                            restaurant=restaurant,
                            user_id=Get_User_ID())
 
@@ -451,7 +457,9 @@ def Edit_Menu_Item(rest_id, item_id):
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
-        return render_template('edit-menu-item.html', restaurant=restaurant, item=item)
+        return render_template('edit-menu-item.html',
+                               back_url=url_for(
+                                   'Edit_Restaurant', rest_id=rest_id),
                                item=item,
                                user_id=Get_User_ID())
 
@@ -478,7 +486,9 @@ def Delete_Menu_Item(rest_id, item_id):
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
-        return render_template('delete-menu-item.html', restaurant=restaurant, item=item)
+        return render_template('delete-menu-item.html',
+                               back_url=url_for(
+                                   'Edit_Restaurant', rest_id=rest_id),
                                item=item,
                                user_id=Get_User_ID())
 
