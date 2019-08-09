@@ -484,8 +484,9 @@ def Delete_Menu_Item(rest_id, item_id):
         flash('Warning: You are not logged in. You must log in to delete a menu item.')
         return redirect(url_for('Show_All_Restaurants'))
 
+    menu_item = session.query(MenuItem).filter_by(id=item_id).one()
+
     if request.method == 'POST':
-        menu_item = session.query(MenuItem).filter_by(id=item_id).one()
         if menu_item != [] and menu_item.user_id == login_session['user']['user_id']:
             session.delete(menu_item)
             session.commit()
@@ -496,15 +497,19 @@ def Delete_Menu_Item(rest_id, item_id):
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
 
-    else:
+    if menu_item.user_id == Get_User_ID():
         restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
         item = session.query(MenuItem).filter_by(id=item_id).one()
 
         return render_template('delete-menu-item.html',
                                back_url=url_for(
                                    'Edit_Restaurant', rest_id=rest_id),
+                               title="Delete Menu Item",
+                               restaurant=restaurant,
                                item=item,
                                user_id=Get_User_ID())
+    else:
+        return redirect(url_for('Show_Restaurant', rest_id=rest_id))
 
 
 @app.route('/restaurants/JSON')
