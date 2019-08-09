@@ -21,6 +21,7 @@ import string
 import httplib2
 import json
 import requests
+import bleach
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -66,32 +67,38 @@ def Log(msg, err=False):
     if not err and app.debug:
         print('INFO: %s' % (msg))
     else:
-        print('ERROR')
+        print('ERROR: %s' % (msg))
 
 
 def Is_Authenticated():
     return ('user' in login_session)
 
 
-def Get_User_Info(email):
-    try:
-        user = session.query(User).filter_by(email=email).one()
+def Get_User_Info(user_session):
+    Log('Enter: Get_User_Info')
 
-        if user != []:
-            Log('Finding user %s... Found!' % (email))
-            return True
-        else:
-            Log('Finding user %s... Not found!' % (email))
-            return None
-    except:
+    user = session.query(User).filter_by(
+        name=user_session.get('name'), 
+        email=user_session.get('email')
+    ).one_or_none()
+    
+    if user is not None:
+        Log('   Finding user %s... Found!' % (user.email))
+        return True
+    else:
+        Log('   Finding user %s... Not found!' % (user_session.get('email')))
         return None
-
+    
 
 def Add_User(user):
+    name = user.get('name')
+    email = bleach.clean(user.get('email'))
+    picture = user.get('picture')
+
     try:
-        new_user = User(name=user.get('name'),
-                        email=user.get('email'),
-                        picture=user.get('picture'))
+        new_user = User(name=name,
+                        email=email,
+                        picture=picture)
         session.add(new_user)
         session.commit()
 
@@ -103,9 +110,9 @@ def Add_User(user):
             "".join((
                 "Could not add the user to the db with the following information: \n",
                 "{\n",
-                "   name: ", user.get('name'), "\n",
-                "   email: ", user.get('email'), "\n",
-                "   picture: ", user.get('picture'), "\n"
+                "   name: ", name, "\n",
+                "   email: ", email, "\n",
+                "   picture: ", picture, "\n"
                 "}"
             ))
         )
@@ -143,26 +150,30 @@ def Google_Login():
                 if idinfo['iss'] not in verified_providers:
                     raise ValueError('Wrong issuer.')
 
-                # If we don't have the user in our db, add them.
-                if Get_User_Info(idinfo['email']) is None:
-                    Log("User is not within the db. Adding them...")
-
-                    # Attempt to add the user
-                    if Add_User(idinfo) != True:
-                        return make_response(jsonify(
-                            message="Error, could not add the user to the database.",
-                            status=501
-                        ))
-
                 # ID token is valid.
                 # Get the user's Google Account ID and the other profile
                 # information from the decoded token, then add the token to
                 # the flask session variable
                 login_session['user'] = {
-                    'name': idinfo['name'],
-                    'email': idinfo['email'],
-                    'picture': idinfo['picture']
+                    'name': idinfo.get('name'),
+                    'email': bleach.clean(idinfo.get('email')),
+                    'picture': idinfo.get('picture')
                 }
+                Log(
+                    'Login_Session Details: %s' % 
+                    json.dumps(login_session['user'])
+                )
+
+                # If we don't have the user in our db, add them.
+                if Get_User_Info(login_session['user']) is None:
+                    Log("User is not within the db. Adding them...")
+
+                    # Attempt to add the user
+                    if Add_User(login_session['user']) != True:
+                        return make_response(jsonify(
+                            message="Error, could not add the user to the database.",
+                            status=501
+                        ))
 
                 Log('User has been successfully logged in.')
 
