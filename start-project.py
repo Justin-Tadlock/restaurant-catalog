@@ -361,32 +361,38 @@ def Delete_Restaurant(rest_id):
         flash('Warning: You are not logged in. You must log in to delete a restaurant.')
         return redirect(url_for('Show_All_Restaurants'))
 
-    if request.method == 'POST':
-        restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
+    if request.method == 'POST':
         if restaurant.user_id == login_session['user']['user_id']:
             if restaurant != []:
-                session.query(MenuItem).filter_by(restaurant_id=rest_id).delete()
+                session.query(MenuItem).filter_by(
+                    restaurant_id=rest_id).delete()
 
             flash('Successfully deleted %s.' % (restaurant.name))
 
             session.delete(restaurant)
             session.commit()
         else:
-            flash('Error: You are not authorized to delete %s' % restaurant.name)
+            flash('Error: You are not authorized to delete %s' %
+                  restaurant.name)
 
         return redirect(url_for('Show_All_Restaurants'))
-    else:
+
+    if restaurant.user_id == Get_User_ID():
         rest_data = Get_Restaurant_Data(rest_id)
 
         return render_template('delete-restaurant.html',
                                back_url=url_for('Show_All_Restaurants'),
+                               title=rest_data['restaurant'].name,
                                restaurant=rest_data['restaurant'],
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'],
                                user_id=Get_User_ID())
+    else:
+        return redirect(url_for('Show_Restaurant', rest_id=rest_id))
 
 
 @app.route('/restaurants/all/items/')
