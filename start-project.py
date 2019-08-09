@@ -426,13 +426,13 @@ def Add_Menu_Item(rest_id):
         flash("Successfully added %s." % (new_menu_item.name))
 
         return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    else:
-        restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
-        return render_template('add-menu-item.html', restaurant=restaurant)
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
+
     return render_template('add-menu-item.html',
                            back_url=url_for('Edit_Restaurant',
                                             rest_id=rest_id),
+                           title="Add Menu Item",
                            restaurant=restaurant,
                            user_id=Get_User_ID())
 
