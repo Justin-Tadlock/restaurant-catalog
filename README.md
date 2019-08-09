@@ -70,4 +70,4 @@ Now you will be able to browse around the application project and utilize all th
 ## Acknowledgments
 
 * [Udacity VM Setup](https://github.com/udacity/fullstack-nanodegree-vm) - for the initial setup of the Vagrant VM.
-* [lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson_1/lotsofmenus.py) - for adding menu item data to the restaurantmenu.db database
+* [lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/lotsofmenus.py) - for adding menu item data to the restaurantmenu.db database
