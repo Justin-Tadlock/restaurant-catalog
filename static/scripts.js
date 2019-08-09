@@ -23,16 +23,10 @@ function showSignInBtn(setVisible) {
     if(setVisible) {
         $('.sign-in').css('display', 'block');
         $('.sign-out').css('display', 'none');
-
-        // Hide the edit buttons
-        $('.auth-btns').css('display', 'none');
     }
     else {
         $('.sign-in').css('display', 'none');
         $('.sign-out').css('display', 'block');
-        
-        // Show the edit buttons
-        $('.auth-btns').css('display', 'block');
     }
 }
 
