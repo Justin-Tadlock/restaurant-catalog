@@ -74,26 +74,37 @@ def Is_Authenticated():
     return ('user' in login_session)
 
 
-def Get_User_Info(user_session):
+def Get_User_Info(user_info):
     Log('Enter: Get_User_Info')
 
     user = session.query(User).filter_by(
-        name=user_session.get('name'), 
-        email=user_session.get('email')
+        name=user_info.get('name'), 
+        email=user_info.get('email')
     ).one_or_none()
     
     if user is not None:
         Log('   Finding user %s... Found!' % (user.email))
+
+        login_session['user'] = {
+            'name': user.name,
+            'email': user.email,
+            'picture': user.picture,
+            'user_id': user.id
+        }
+
+        Log('   login_session: %s' % json.dumps(login_session['user']))
         return True
     else:
-        Log('   Finding user %s... Not found!' % (user_session.get('email')))
+        Log('   Finding user %s... Not found!' % (user_info.get('email')))
         return None
     
 
-def Add_User(user):
-    name = user.get('name')
-    email = bleach.clean(user.get('email'))
-    picture = user.get('picture')
+def Add_User(user_info):
+    Log('Enter: Add_User')
+
+    name = user_info.get('name')
+    email = bleach.clean(user_info.get('email'))
+    picture = user_info.get('picture')
 
     try:
         new_user = User(name=name,
@@ -101,6 +112,10 @@ def Add_User(user):
                         picture=picture)
         session.add(new_user)
         session.commit()
+
+        login_session['user'] = Get_User_Info(user_info)
+        Log('   User_id: %d' % login_session['user']['user_id'])
+
 
         Log('Successfully added the user.')
 
@@ -154,22 +169,22 @@ def Google_Login():
                 # Get the user's Google Account ID and the other profile
                 # information from the decoded token, then add the token to
                 # the flask session variable
-                login_session['user'] = {
+                profile_info = {
                     'name': idinfo.get('name'),
                     'email': bleach.clean(idinfo.get('email')),
                     'picture': idinfo.get('picture')
                 }
                 Log(
-                    'Login_Session Details: %s' % 
-                    json.dumps(login_session['user'])
+                    'profile_info Details: %s' % 
+                    json.dumps(profile_info)
                 )
 
                 # If we don't have the user in our db, add them.
-                if Get_User_Info(login_session['user']) is None:
+                if Get_User_Info(profile_info) is None:
                     Log("User is not within the db. Adding them...")
 
                     # Attempt to add the user
-                    if Add_User(login_session['user']) != True:
+                    if Add_User(profile_info) != True:
                         return make_response(jsonify(
                             message="Error, could not add the user to the database.",
                             status=501
@@ -281,7 +296,10 @@ def Add_Restaurant():
         return redirect(url_for('Show_All_Restaurants'))
 
     if request.method == 'POST':
-        new_restaurant = Restaurant(name=request.form['rest_name'])
+        new_restaurant = Restaurant(
+            name=request.form['rest_name'], 
+            user_id=login_session['user']['user_id']
+        )
 
         session.add(new_restaurant)
         session.commit()
@@ -367,7 +385,8 @@ def Add_Menu_Item(rest_id):
             price=form['item_price'],
             course=form['item_course'],
             description=form['item_description'],
-            restaurant_id=rest_id
+            restaurant_id=rest_id,
+            user_id=login_session['user']['user_id']
         )
 
         session.add(new_menu_item)
