@@ -325,31 +325,34 @@ def Edit_Restaurant(rest_id):
         flash('Warning: You are not logged in. You must log in to edit a restaurant.')
         return redirect(url_for('Show_All_Restaurants'))
 
-    if request.method == 'POST':
-        updated_restaurant = session.query(
-            Restaurant).filter_by(id=rest_id).one()
+    restaurant = session.query(Restaurant).filter_by(id=rest_id).one()
 
-        if updated_restaurant.user_id == login_session['user']['user_id']:
-            updated_restaurant.name = request.form['rest_name']
-            session.add(updated_restaurant)
+    if request.method == 'POST':
+        if restaurant.user_id == login_session['user']['user_id']:
+            restaurant.name = request.form['rest_name']
+            session.add(restaurant)
             session.commit()
 
-            flash('Successfully updated %s.' % (updated_restaurant.name))
+            flash('Successfully updated %s.' % (restaurant.name))
         else:
-            flash('Error: You are not authorized to modify %s.' % (updated_restaurant.name))
+            flash('Error: You are not authorized to edit %s' % restaurant.name)
 
-        return redirect(url_for('Edit_Restaurant', rest_id=rest_id))
-    else:
+        return url_for('Show_All_Restaurants')
+
+    if Get_User_ID() == restaurant.user_id:
         rest_data = Get_Restaurant_Data(rest_id)
 
         return render_template('edit-restaurant.html',
                                back_url=url_for('Show_All_Restaurants'),
+                               title=rest_data['restaurant'].name,
                                restaurant=rest_data['restaurant'],
                                appetizer_items=rest_data['appetizers'],
                                drink_items=rest_data['drinks'],
                                entree_items=rest_data['entrees'],
                                dessert_items=rest_data['desserts'],
                                user_id=Get_User_ID())
+    else:
+        return redirect(url_for('Show_Restaurant', rest_id=rest_id))
 
 
 @app.route('/restaurant/<int:rest_id>/delete', methods=['GET', 'POST'])
